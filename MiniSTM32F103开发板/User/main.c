@@ -100,7 +100,7 @@ uint16_t GetData()
 		{
 				dat = ATK_MS53L0MWork();
 //			  printf("dat = %d  ", dat);
-			//	dat = FitData(dat);
+			 	dat = FitData(dat);
 //				printf("fit = %d\r\n", dat);
 				buf[i] = dat;
 		}
@@ -217,7 +217,7 @@ int main(void)
 			float feedbackValue = dat; //这里获取到被控对象的反馈值
       float targetValue = 200; //这里获取到目标值
 			PID_Calc(&mypid, targetValue, feedbackValue); //进行PID计算，结果在output成员变量中
-			printf("%f", mypid.output);
+			printf("%f ", mypid.output);
 		
 			angle = 54 * (mypid.output + 1000) / 2000;
 			Servo_SetAngle(angle);
