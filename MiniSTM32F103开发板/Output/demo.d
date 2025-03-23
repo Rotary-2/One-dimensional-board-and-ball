@@ -1,6 +1,5 @@
 ..\..\output\demo.o: ..\..\User\demo.c
 ..\..\output\demo.o: ..\..\User\demo.h
-..\..\output\demo.o: ..\..\Drivers\./BSP/ATK_MS53L0M/atk_ms53l0m.h
 ..\..\output\demo.o: ..\..\Drivers\./SYSTEM/sys/sys.h
 ..\..\output\demo.o: ..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx.h
 ..\..\output\demo.o: ..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f103xe.h
@@ -60,6 +59,7 @@
 ..\..\output\demo.o: ..\..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pcd_ex.h
 ..\..\output\demo.o: ..\..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_hcd.h
 ..\..\output\demo.o: ..\..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_mmc.h
+..\..\output\demo.o: ..\..\Drivers\./BSP/ATK_MS53L0M/atk_ms53l0m.h
 ..\..\output\demo.o: ..\..\Drivers\./BSP/ATK_MS53L0M/atk_ms53l0m_uart.h
 ..\..\output\demo.o: ..\..\Drivers\./SYSTEM/usart/usart.h
 ..\..\output\demo.o: D:\software\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

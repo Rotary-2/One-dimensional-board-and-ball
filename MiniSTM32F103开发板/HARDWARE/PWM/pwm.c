@@ -87,8 +87,24 @@ void Servo_SetAngle(float Angle)
 	
 		//¼ÆËãCCR
 		u32 ConvertAngle = 2000 * (Angle + (180 - range) / 2) / 180 + 17500;
-		printf("CCR = %d\r\n", ConvertAngle);
+
 	TIM_SetTIM1Compare1(ConvertAngle);	
 	
+}
+
+//¶æ»ú²âÊÔº¯Êý
+void Servo_test(void)
+{
+		u32 i;
+		for (i = 0; i < 54; i++)
+		{
+				Servo_SetAngle(i);
+				delay_ms(50);
+		}
+		for (i = 54; i > 0; i--)
+		{
+				Servo_SetAngle(i);
+				delay_ms(50);
+		}
 }
 

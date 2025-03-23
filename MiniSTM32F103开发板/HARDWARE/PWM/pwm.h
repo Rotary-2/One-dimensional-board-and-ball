@@ -2,6 +2,7 @@
 #define _TIMER_H
 #include "./SYSTEM/sys/sys.h"
 #include "./SYSTEM/usart/usart.h"
+#include "./SYSTEM/delay/delay.h"
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK STM32F103开发板
@@ -21,5 +22,6 @@ void TIM1_PWM_Init(u16 arr,u16 psc);
 void TIM_SetTIM1Compare1(u32 compare);
 
 void Servo_SetAngle(float Angle);
+void Servo_test(void);
 #endif
 

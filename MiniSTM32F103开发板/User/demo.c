@@ -27,6 +27,8 @@
 #include "./BSP/LCD/lcd.h"
 #include <stdio.h>
 
+uint16_t Id;
+
 /**
  * @brief       显示设备地址
  * @param       无
@@ -103,6 +105,7 @@ static void demo_key1_fun(uint8_t *is_normal, uint16_t device_id)
             atk_ms53l0m_write_data(device_id, ATK_MS53L0M_FUNCODE_BACKRATE, ATK_MS53L0M_BACKRATE_5HZ);
             /* 设置ATK-MS53L0M的测量模式为长距离模式 */
 //            atk_ms53l0m_write_data(device_id, ATK_MS53L0M_FUNCODE_MEAUMODE, ATK_MS53L0M_MEAUMODE_LONG);
+						/* 设置ATK-MS53L0M的测量模式为高精度模式 */
 						atk_ms53l0m_write_data(device_id, ATK_MS53L0M_FUNCODE_MEAUMODE, ATK_MS53L0M_MEAUMODE_HIPRECI);
             
             *is_normal = 1;
@@ -121,6 +124,7 @@ static void demo_key1_fun(uint8_t *is_normal, uint16_t device_id)
         {
             /* 设置ATK-MS53L0M的测量模式为高速测量模式 */
 //            atk_ms53l0m_write_data(device_id, ATK_MS53L0M_FUNCODE_MEAUMODE, ATK_MS53L0M_MEAUMODE_HISPEED);
+						/* 设置ATK-MS53L0M的测量模式为高精度模式 */
 						atk_ms53l0m_write_data(device_id, ATK_MS53L0M_FUNCODE_MEAUMODE, ATK_MS53L0M_MEAUMODE_HIPRECI);
             
             *is_normal = 0;
@@ -188,4 +192,57 @@ void demo_run(void)
         
         delay_ms(10);
     }
+}
+
+/**
+ * @brief       ATK-MS53L0M初始化
+ * @param       无
+ * @retval      无
+ */
+void ATK_MS53L0MInit(void)
+{
+    uint8_t ret;
+    uint16_t id;
+    
+    /* 初始化ATK-MS53L0M */
+    ret = atk_ms53l0m_init(115200, &id);
+    if (ret != 0)
+    {
+        printf("ATK-MS53L0M init failed!\r\n");
+        while (1)
+        {
+            LED0_TOGGLE();
+            delay_ms(200);
+        }
+    }
+    
+    /* ATK-MS53L0M初始化成功，显示设备地址 */
+    demo_show_id(id);
+    Id = id;
+}
+
+/**
+ * @brief       ATK-MS53L0M工作函数
+ * @param       无
+ * @retval      距离
+ */
+uint16_t ATK_MS53L0MWork(void)
+{
+		uint8_t ret;
+    uint16_t dat;
+	
+		/* ATK-MS53L0M Modbus工作模式获取测量值 */
+		ret = atk_ms53l0m_modbus_get_data(Id, &dat);
+		if (ret == 0)
+		{
+//				printf("[Modbus]Distance: %dmm\r\n", dat);	
+				return dat;
+		}
+		else
+		{
+				printf("Modbus mode get data failed!\r\n");
+		}
+
+		return 0;
+		
 }

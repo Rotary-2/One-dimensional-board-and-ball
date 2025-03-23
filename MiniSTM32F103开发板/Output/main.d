@@ -67,3 +67,4 @@
 ..\..\output\main.o: D:\software\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 ..\..\output\main.o: ..\..\User\demo.h
 ..\..\output\main.o: ..\..\HARDWARE\PWM\pwm.h
+..\..\output\main.o: D:\software\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

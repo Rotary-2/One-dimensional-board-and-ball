@@ -21,6 +21,10 @@
 #ifndef __DEMO_H
 #define __DEMO_H
 
+#include "./SYSTEM/sys/sys.h"
+
 void demo_run(void);
+void ATK_MS53L0MInit(void);
+uint16_t ATK_MS53L0MWork(void);
 
 #endif
