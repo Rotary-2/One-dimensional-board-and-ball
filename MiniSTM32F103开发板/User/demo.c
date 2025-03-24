@@ -206,7 +206,7 @@ void ATK_MS53L0MInit(void)
     
     /* 初始化ATK-MS53L0M */
     ret = atk_ms53l0m_init(115200, &id);
-//	printf("ret =  %dmm\r\n", ret);
+
     if (ret != 0)
     {
         printf("11111ATK-MS53L0M init failed!\r\n");
@@ -221,12 +221,6 @@ void ATK_MS53L0MInit(void)
     demo_show_id(id);
     Id = id;
 		
-		/* 设置ATK-MS53L0M的工作模式为Normal模式 */
-//		ret = atk_ms53l0m_write_data(Id, ATK_MS53L0M_FUNCODE_WORKMODE, ATK_MS53L0M_WORKMODE_NORMAL);
-////		/* 设置ATK-MS53L0M的回传速率为5Hz */
-////			atk_ms53l0m_write_data(Id, ATK_MS53L0M_FUNCODE_BACKRATE, ATK_MS53L0M_BACKRATE_20HZ);
-////			/* 设置ATK-MS53L0M的测量模式为高速模式 */
-//		atk_ms53l0m_write_data(Id, ATK_MS53L0M_FUNCODE_MEAUMODE, ATK_MS53L0M_MEAUMODE_HISPEED);
 }
 
 /**
@@ -238,13 +232,9 @@ uint16_t ATK_MS53L0MWork(void)
 {
 		uint8_t ret;
     uint16_t dat;
-	
-////		/* ATK-MS53L0M Modbus工作模式获取测量值 */
-//		ret = atk_ms53l0m_modbus_get_data(Id, &dat);
-	
-	
-	/* ATK-MS53L0M Normal工作模式获取测量值 */
-        ret = atk_ms53l0m_normal_get_data(&dat);
+
+		/* ATK-MS53L0M Normal工作模式获取测量值 */
+    ret = atk_ms53l0m_normal_get_data(&dat);
 	
 	
 		if (ret == 0)

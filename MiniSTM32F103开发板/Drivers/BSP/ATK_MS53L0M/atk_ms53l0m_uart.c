@@ -60,8 +60,11 @@ uint16_t FitData(uint16_t dat)
 	//多项式拟合
 //		fit = 10.9553 * pow(dat, 4) + 43.009 * pow( dat, 3) + 47.1402 * pow(dat, 2) + 113.1728 * dat + 226.9602;
 	
-	//傅里叶拟合
+	//高精度模式傅里叶拟合
 	fit = 501.3434 - 367.628 * cos((double)dat * 0.007) - 449.618 * sin((double)dat * 0.007) - 167.328 * cos((double)dat * 0.007 * 2) + 190.7319 * sin((double)dat * 0.007 * 2) + 45.2586 * cos((double)dat * 0.007 * 3) + 31.0833 * sin((double)dat * 0.007 * 3);
+		
+	//高速模式傅里叶拟合
+	fit = 288.0581 - 193.5657 * cos((double)dat * 0.0085) - 187.9641 * sin((double)dat * 0.0085) - 89.6982 * cos((double)dat * 0.0085 * 2) + 59.9308 * sin((double)dat * 0.0085 * 2) + 7.8271 * cos((double)dat * 0.0085 * 3) + 24.8684 * sin((double)dat * 0.0085 * 3);
 	
 		return fit;
 }
@@ -249,35 +252,32 @@ void ATK_MS53L0M_UART_IRQHandler(void)
             g_uart_rx_frame.buf[g_uart_rx_frame.sta.len] = tmp;             /* 将接收到的数据写入缓冲 */
 						
 						///////可修改范围//////////////////////////////////////////////
-//						if (OKFlag)
-//						{
-								if (tmp == 'd') DatFlag = 1;
-								if (DatFlag)
-								{
-									if (tmp >= '0' && tmp <= '9')
-									{
-											dat = dat * 10 + (tmp - '0');
-									}
-								}
-								if (tmp == 'm' && DatFlag)
-								{			
-									printf("1");
-//									printf("%dmm\r\n", dat);
-		//							dat =	GetData(dat);
-		//							printf("Distance: %dmm\r\n", dat);
-									float feedbackValue = dat; //这里获取到被控对象的反馈值
-									float targetValue = 200; //这里获取到目标值
-									PID_Calc(&mypid, targetValue, feedbackValue); //进行PID计算，结果在output成员变量中
-								
-									angle = 54 * (mypid.output + 1000) / 2000;
-									Servo_SetAngle(angle);
-									
-									DatFlag = 0;
-									dat = 0;
-								}
-
-//						}
+						if (OKFlag){
+						if (tmp == 'd') DatFlag = 1;
+						if (DatFlag)
+						{
+							if (tmp >= '0' && tmp <= '9')
+							{
+									dat = dat * 10 + (tmp - '0');
+							}
+						}
+						if (tmp == 'm' && DatFlag)
+						{			
+							dat =	GetData(dat);
+							float feedbackValue = dat; //这里获取到被控对象的反馈值
+							float targetValue = 200; //这里获取到目标值
+							PID_Calc(&mypid, targetValue, feedbackValue); //进行PID计算，结果在output成员变量中
 						
+							//舵机最大角度修改此处//////////////////////////////////////////////////////////////
+							angle = 100 * (mypid.output + 1000) / 2000;
+							///////////////////////////////////////////////////////////////////////////////////
+							Servo_SetAngle(angle);
+							printf("Distance: %dmm\r\n", dat);	
+							
+							DatFlag = 0;
+							dat = 0;
+						}
+					}
 						//////////////////////////////////////////////////////////////
 					
             g_uart_rx_frame.sta.len++;                                      /* 更新接收到的数据长度 */
