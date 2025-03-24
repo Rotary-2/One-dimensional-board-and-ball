@@ -33,6 +33,8 @@
 #define ATK_MS53L0M_OPT_READ            0x00    /* 读操作 */
 #define ATK_MS53L0M_OPT_WRITE           0x01    /* 写操作 */
 
+uint16_t OKFlag;
+
 /**
  * @brief       计算CRC校验和
  * @param       buf: 数据缓冲
@@ -303,21 +305,40 @@ uint8_t atk_ms53l0m_init(uint32_t baudrate, uint16_t *id)
         delay_ms(100);
         if (++i == 5)
         {
+						printf("ADDRESSERROR\r\n");
             return ATK_MS53L0M_ERROR;
         }
     }
     
-    /* 设置ATK-MS53L0M模块的工作模式为Modbus模式 */
-    i = 0;
-    while (atk_ms53l0m_write_data(*id, ATK_MS53L0M_FUNCODE_WORKMODE, ATK_MS53L0M_WORKMODE_MODBUS) != ATK_MS53L0M_EOK)
+//		i = 0;
+//    /* 设置ATK-MS53L0M模块的工作模式为Modbus模式 */
+////    while (atk_ms53l0m_write_data(*id, ATK_MS53L0M_FUNCODE_WORKMODE, ATK_MS53L0M_WORKMODE_MODBUS) != ATK_MS53L0M_EOK)
+		/* 设置ATK-MS53L0M模块的工作模式为Normal模式 */
+		while (atk_ms53l0m_write_data(*id, ATK_MS53L0M_FUNCODE_WORKMODE, ATK_MS53L0M_WORKMODE_NORMAL) != ATK_MS53L0M_EOK)
     {
         delay_ms(100);
         if (++i == 5)
         {
+					printf("NORMALERROR\r\n");
             return ATK_MS53L0M_ERROR;
         }
     }
-    
+		
+//		i = 0;
+//		/* 设置ATK-MS53L0M的测量模式为高速模式 */
+////		while (atk_ms53l0m_write_data(*id, ATK_MS53L0M_FUNCODE_MEAUMODE, ATK_MS53L0M_MEAUMODE_HISPEED) != ATK_MS53L0M_EOK)
+//		/* 设置ATK-MS53L0M的测量模式为高精度模式 */
+//		while (atk_ms53l0m_write_data(*id, ATK_MS53L0M_FUNCODE_MEAUMODE, ATK_MS53L0M_MEAUMODE_HIPRECI) != ATK_MS53L0M_EOK)
+//    {
+//        delay_ms(100);
+//        if (++i == 5)
+//        {
+//						printf("HISPEEDERROR\r\n");
+//            return ATK_MS53L0M_ERROR;
+//        }
+//    }
+    printf("OK\r\n");
+		OKFlag = 1;
     return ATK_MS53L0M_EOK;
 }
 

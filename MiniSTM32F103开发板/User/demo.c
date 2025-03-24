@@ -104,9 +104,9 @@ static void demo_key1_fun(uint8_t *is_normal, uint16_t device_id)
             /* 设置ATK-MS53L0M的回传速率为5Hz */
             atk_ms53l0m_write_data(device_id, ATK_MS53L0M_FUNCODE_BACKRATE, ATK_MS53L0M_BACKRATE_5HZ);
             /* 设置ATK-MS53L0M的测量模式为长距离模式 */
-//            atk_ms53l0m_write_data(device_id, ATK_MS53L0M_FUNCODE_MEAUMODE, ATK_MS53L0M_MEAUMODE_LONG);
+            atk_ms53l0m_write_data(device_id, ATK_MS53L0M_FUNCODE_MEAUMODE, ATK_MS53L0M_MEAUMODE_LONG);
 						/* 设置ATK-MS53L0M的测量模式为高精度模式 */
-						atk_ms53l0m_write_data(device_id, ATK_MS53L0M_FUNCODE_MEAUMODE, ATK_MS53L0M_MEAUMODE_HIPRECI);
+//						atk_ms53l0m_write_data(device_id, ATK_MS53L0M_FUNCODE_MEAUMODE, ATK_MS53L0M_MEAUMODE_HIPRECI);
             
             *is_normal = 1;
             printf("Set to Normal mode.\r\n");
@@ -206,9 +206,10 @@ void ATK_MS53L0MInit(void)
     
     /* 初始化ATK-MS53L0M */
     ret = atk_ms53l0m_init(115200, &id);
+//	printf("ret =  %dmm\r\n", ret);
     if (ret != 0)
     {
-        printf("ATK-MS53L0M init failed!\r\n");
+        printf("11111ATK-MS53L0M init failed!\r\n");
         while (1)
         {
             LED0_TOGGLE();
@@ -219,6 +220,13 @@ void ATK_MS53L0MInit(void)
     /* ATK-MS53L0M初始化成功，显示设备地址 */
     demo_show_id(id);
     Id = id;
+		
+		/* 设置ATK-MS53L0M的工作模式为Normal模式 */
+//		ret = atk_ms53l0m_write_data(Id, ATK_MS53L0M_FUNCODE_WORKMODE, ATK_MS53L0M_WORKMODE_NORMAL);
+////		/* 设置ATK-MS53L0M的回传速率为5Hz */
+////			atk_ms53l0m_write_data(Id, ATK_MS53L0M_FUNCODE_BACKRATE, ATK_MS53L0M_BACKRATE_20HZ);
+////			/* 设置ATK-MS53L0M的测量模式为高速模式 */
+//		atk_ms53l0m_write_data(Id, ATK_MS53L0M_FUNCODE_MEAUMODE, ATK_MS53L0M_MEAUMODE_HISPEED);
 }
 
 /**
@@ -231,8 +239,14 @@ uint16_t ATK_MS53L0MWork(void)
 		uint8_t ret;
     uint16_t dat;
 	
-		/* ATK-MS53L0M Modbus工作模式获取测量值 */
-		ret = atk_ms53l0m_modbus_get_data(Id, &dat);
+////		/* ATK-MS53L0M Modbus工作模式获取测量值 */
+//		ret = atk_ms53l0m_modbus_get_data(Id, &dat);
+	
+	
+	/* ATK-MS53L0M Normal工作模式获取测量值 */
+        ret = atk_ms53l0m_normal_get_data(&dat);
+	
+	
 		if (ret == 0)
 		{
 //				printf("[Modbus]Distance: %dmm\r\n", dat);	
@@ -240,7 +254,7 @@ uint16_t ATK_MS53L0MWork(void)
 		}
 		else
 		{
-				printf("Modbus mode get data failed!\r\n");
+				printf("Get data failed!\r\n");
 		}
 
 		return 0;

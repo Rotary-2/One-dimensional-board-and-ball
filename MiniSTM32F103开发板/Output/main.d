@@ -65,6 +65,7 @@
 ..\..\output\main.o: ..\..\Drivers\./BSP/KEY/key.h
 ..\..\output\main.o: ..\..\Drivers\./BSP/LCD/lcd.h
 ..\..\output\main.o: D:\software\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\..\output\main.o: ..\..\Drivers\./BSP/ATK_MS53L0M/atk_ms53l0m.h
+..\..\output\main.o: ..\..\Drivers\./BSP/ATK_MS53L0M/atk_ms53l0m_uart.h
 ..\..\output\main.o: ..\..\User\demo.h
 ..\..\output\main.o: ..\..\HARDWARE\PWM\pwm.h
-..\..\output\main.o: D:\software\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

@@ -62,3 +62,6 @@
 ..\..\output\usart.o: D:\software\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\..\output\usart.o: ..\..\Drivers\./BSP/ATK_MS53L0M/atk_ms53l0m.h
 ..\..\output\usart.o: ..\..\Drivers\./BSP/ATK_MS53L0M/atk_ms53l0m_uart.h
+..\..\output\usart.o: ..\..\User\demo.h
+..\..\output\usart.o: ..\..\HARDWARE\PWM\pwm.h
+..\..\output\usart.o: ..\..\Drivers\./SYSTEM/delay/delay.h

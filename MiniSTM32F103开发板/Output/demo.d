@@ -61,6 +61,7 @@
 ..\..\output\demo.o: ..\..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_mmc.h
 ..\..\output\demo.o: ..\..\Drivers\./BSP/ATK_MS53L0M/atk_ms53l0m.h
 ..\..\output\demo.o: ..\..\Drivers\./BSP/ATK_MS53L0M/atk_ms53l0m_uart.h
+..\..\output\demo.o: ..\..\HARDWARE\PWM\pwm.h
 ..\..\output\demo.o: ..\..\Drivers\./SYSTEM/usart/usart.h
 ..\..\output\demo.o: D:\software\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 ..\..\output\demo.o: ..\..\Drivers\./SYSTEM/delay/delay.h

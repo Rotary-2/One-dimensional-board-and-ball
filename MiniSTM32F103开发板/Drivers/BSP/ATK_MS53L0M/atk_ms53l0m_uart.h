@@ -22,6 +22,8 @@
 #define __ATK_MS53L0M_UART_H
 
 #include "./SYSTEM/sys/sys.h"
+#include "demo.h"
+#include "pwm.h"
 
 /* 引脚定义 */
 #define ATK_MS53L0M_UART_TX_GPIO_PORT           GPIOC
@@ -40,7 +42,20 @@
 /* UART收发缓冲大小 */
 #define ATK_MS53L0M_UART_RX_BUF_SIZE            128
 
+//首先定义PID结构体用于存放一个PID的数据
+typedef struct
+{
+   	float kp, ki, kd; //三个系数
+    float error, lastError; //误差、上次误差
+    float integral, maxIntegral; //积分、积分限幅
+    float output, maxOutput; //输出、输出限幅
+}PID;
+
+extern PID mypid; //创建一个PID结构体变量
+
 /* 操作函数 */
+void PID_Init(PID *pid, float p, float i, float d, float maxI, float maxOut);
+
 void atk_ms53l0m_uart_send(uint8_t *dat, uint8_t len);  /* ATK-MS53L0M UART发送数据 */
 void atk_ms53l0m_uart_rx_restart(void);                 /* ATK-MS53L0M UART重新开始接收数据 */
 uint8_t *atk_ms53l0m_uart_rx_get_frame(void);           /* 获取ATK-MS53L0M UART接收到的一帧数据 */

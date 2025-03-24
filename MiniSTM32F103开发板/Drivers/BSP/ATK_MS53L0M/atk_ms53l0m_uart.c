@@ -19,6 +19,8 @@
  */
 
 #include "./BSP/ATK_MS53L0M/atk_ms53l0m_uart.h"
+#include <string.h>
+#include <math.h>
 
 static UART_HandleTypeDef g_uart_handle;                    /* ATK-MS53L0M UART */
 static struct
@@ -30,6 +32,115 @@ static struct
         uint16_t finsh  : 1;                                /* 帧接收完成标志，sta[15] */
     } sta;                                                  /* 帧状态信息 */
 } g_uart_rx_frame = {0};                                    /* ATK-MS53L0M UART接收帧缓冲信息结构体 */
+
+///////可修改范围//////////////////////////////////////////////
+
+uint16_t DatFlag = 0;
+uint16_t dat = 0;
+
+extern uint16_t OKFlag;
+
+//5个数据取平均值
+u32 i = 0;
+uint16_t buf[5];
+u32 cnt;
+uint16_t sum;
+
+float angle;
+
+/**
+ * @brief      	计算拟合
+ * @param       原始值
+ * @retval      拟合后的值
+ */
+uint16_t FitData(uint16_t dat)
+{
+		uint16_t fit;
+	
+	//多项式拟合
+//		fit = 10.9553 * pow(dat, 4) + 43.009 * pow( dat, 3) + 47.1402 * pow(dat, 2) + 113.1728 * dat + 226.9602;
+	
+	//傅里叶拟合
+	fit = 501.3434 - 367.628 * cos((double)dat * 0.007) - 449.618 * sin((double)dat * 0.007) - 167.328 * cos((double)dat * 0.007 * 2) + 190.7319 * sin((double)dat * 0.007 * 2) + 45.2586 * cos((double)dat * 0.007 * 3) + 31.0833 * sin((double)dat * 0.007 * 3);
+	
+		return fit;
+}
+
+/**
+ * @brief       均值滤波5个数据
+ * @param       dat
+ * @retval      平均值
+ */
+uint16_t GetData(uint16_t dat)
+{
+		u32 j;
+		uint16_t aver;
+		
+		i++;
+		if (i >= 5) 
+		{
+				i = 0;
+		}
+			
+		dat = FitData(dat);
+		buf[i] = dat;
+
+		sum = 0;
+		cnt = 0;
+	
+		for (j = 0; j < 5; j++)
+		{
+				if (buf[i] - buf[j] < 10 && buf[i] - buf[j] > -10)
+				{
+						sum += buf[j];
+						cnt++;
+				}
+		}
+		
+		if (cnt)
+		{
+				aver = sum / cnt;
+				return aver;
+		}
+		
+		return dat;
+}
+ 
+//用于初始化pid参数的函数
+void PID_Init(PID *pid, float p, float i, float d, float maxI, float maxOut)
+{
+    pid->kp = p;
+    pid->ki = i;
+    pid->kd = d;
+    pid->maxIntegral = maxI;
+    pid->maxOutput = maxOut;
+}
+ 
+//进行一次pid计算
+//参数为(pid结构体,目标值,反馈值)，计算结果放在pid结构体的output成员中
+void PID_Calc(PID *pid, float reference, float feedback)
+{
+ 	//更新数据
+    pid->lastError = pid->error; //将旧error存起来
+    pid->error = reference - feedback; //计算新error
+    //计算微分
+    float dout = (pid->error - pid->lastError) * pid->kd;
+    //计算比例
+    float pout = pid->error * pid->kp;
+    //计算积分
+    pid->integral += pid->error * pid->ki;
+    //积分限幅
+    if(pid->integral > pid->maxIntegral) pid->integral = pid->maxIntegral;
+    else if(pid->integral < -pid->maxIntegral) pid->integral = -pid->maxIntegral;
+    //计算输出
+    pid->output = pout+dout + pid->integral;
+    //输出限幅
+    if(pid->output > pid->maxOutput) pid->output =   pid->maxOutput;
+    else if(pid->output < -pid->maxOutput) pid->output = -pid->maxOutput;
+}
+
+
+//////////////////////////////////////////////////////////////
 
 /**
  * @brief       ATK-MS53L0M UART发送数据
@@ -136,6 +247,39 @@ void ATK_MS53L0M_UART_IRQHandler(void)
                                                                              */
         {
             g_uart_rx_frame.buf[g_uart_rx_frame.sta.len] = tmp;             /* 将接收到的数据写入缓冲 */
+						
+						///////可修改范围//////////////////////////////////////////////
+//						if (OKFlag)
+//						{
+								if (tmp == 'd') DatFlag = 1;
+								if (DatFlag)
+								{
+									if (tmp >= '0' && tmp <= '9')
+									{
+											dat = dat * 10 + (tmp - '0');
+									}
+								}
+								if (tmp == 'm' && DatFlag)
+								{			
+									printf("1");
+//									printf("%dmm\r\n", dat);
+		//							dat =	GetData(dat);
+		//							printf("Distance: %dmm\r\n", dat);
+									float feedbackValue = dat; //这里获取到被控对象的反馈值
+									float targetValue = 200; //这里获取到目标值
+									PID_Calc(&mypid, targetValue, feedbackValue); //进行PID计算，结果在output成员变量中
+								
+									angle = 54 * (mypid.output + 1000) / 2000;
+									Servo_SetAngle(angle);
+									
+									DatFlag = 0;
+									dat = 0;
+								}
+
+//						}
+						
+						//////////////////////////////////////////////////////////////
+					
             g_uart_rx_frame.sta.len++;                                      /* 更新接收到的数据长度 */
         }
         else                                                                /* UART接收缓冲溢出 */
@@ -152,4 +296,5 @@ void ATK_MS53L0M_UART_IRQHandler(void)
         
         __HAL_UART_CLEAR_IDLEFLAG(&g_uart_handle);                          /* 清除UART总线空闲中断 */
     }
+		
 }
